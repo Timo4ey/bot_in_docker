@@ -1,0 +1,8 @@
+asyncpg
+aiohttp
+python-dotenv
+pandas==1.4.1
+psycopg2-binary==2.9.3
+requests==2.27.1
+python-telegram-bot==20.0a1
+
