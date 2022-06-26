@@ -8,8 +8,6 @@ WORKDIR /usr/scr/test_docker/
 COPY . /usr/scr/test_docker/
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 5000
-
 COPY . . 
 
 CMD ["python","main_bot.py"]

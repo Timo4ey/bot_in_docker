@@ -16,7 +16,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Start the bot"""
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="I'm a bot, please talk to me!"
+        text="Hello I'm Memes bot. I've been developed to send memes \n Instruction: \
+             \n - input a number from 1 to 66 \n - press 'Yes' \
+              \n *1 == 1 hour, 6 == 6 hours etc. \
+              \n *database updates every 59 minutes"
     )
 
 
@@ -25,7 +28,7 @@ async def button(update:Update, context:ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
 
     await query.answer()
-    
+
     if query.data != '0':
         await send_memes_runner(chat_id=update.effective_chat.id, hours = int(query.data)) 
     else:
@@ -61,7 +64,9 @@ async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def helper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Hello! \n I'm MemesBot, I've made for send memes \n If you want to get memes, just send me a number from 1 to 66 (1 == 1 hour) \n :3 \n ")    
+        text="Hello! \n I'm MemesBot, I've made for send memes \n If you want to get memes, \
+             just send me a number from 1 to 66 (1 == 1 hour) and press 'Yes' \n  \
+                *database updates every 59 minutes")    
 
 
 
