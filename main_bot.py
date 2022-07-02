@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
     start_handler = CommandHandler('start', start)
     helper_handler = CommandHandler('help', helper)
-    memes_handler = MessageHandler(filters.Regex('^([0-66])'), agreement_buttons)
+    memes_handler = MessageHandler(filters.Regex('([0-9])'), agreement_buttons)
     unknown_handler = MessageHandler(filters.COMMAND, unknown)
 
     
