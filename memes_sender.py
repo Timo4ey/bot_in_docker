@@ -6,6 +6,7 @@ import aiohttp
 import asyncpg
 from telegram.ext import ApplicationBuilder
 
+
 from config import tg_access_token, db_db_name, db_host, db_password, db_user
 bot = ApplicationBuilder().token(tg_access_token).build().bot
 
@@ -54,18 +55,24 @@ async def job(db_pool, chat_id, hours = 6):
 
 async def send_memes_runner(chat_id, hours = 6):
     """Main function"""
-    async with asyncpg.create_pool(host = db_host
-    , user = db_user
-    , password = db_password
-    , database = db_db_name) as db_pool:
-        task1 = asyncio.create_task(job(db_pool, chat_id, hours = hours))
-        await asyncio.gather(db_pool, task1)
+    try:
+        connection = await asyncpg.connect(host = db_host, user = db_user, password = db_password
+        , database = db_db_name)
+        await asyncio.sleep(0.3)
+        task1 = asyncio.create_task(job(connection, chat_id, hours = hours))
+        await asyncio.gather(task1)
+    except Exception as _ex:
+        print('Error:', _ex)
+    finally:
+        if connection:
+            await connection.close()
+            print('connection is closed')
 #189382736
 
-# if __name__ == '__main__':
-#     t0 = time()   
-#     asyncio.run(send_memes_runner(189382736, 6))
-#     print(time() - t0)
+if __name__ == '__main__':
+    t0 = time()   
+    asyncio.run(send_memes_runner(189382736, 12))
+    print(time() - t0)
     
 
 
