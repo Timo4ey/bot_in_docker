@@ -19,7 +19,7 @@ async def grasp_rows(db_pool, hours = 6, type_of_post = 'post_db'):
 
     postgres_insert = f"""
     SELECT pd.url, pd.text
-    FROM {choose} pd
+    FROM post_db pd
     WHERE pd.content_id in (SELECT cb.content_id FROM content_db cb 
             WHERE save_date > '{str(certain_time)}')"""
     try:

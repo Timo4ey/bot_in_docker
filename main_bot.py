@@ -5,6 +5,7 @@ from telegram import Update,InlineKeyboardButton, InlineKeyboardMarkup,InlineQue
 from telegram.ext import filters, CallbackQueryHandler, MessageHandler, ApplicationBuilder, CommandHandler, ContextTypes, InlineQueryHandler
 from config import tg_access_token
 from memes_sender import send_memes_runner
+from carousels_memes_sender import main_carousel_sender
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -28,26 +29,35 @@ async def button(update:Update, context:ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
 
     await query.answer()
+    temp_list = query.data.split(':')
 
-    if query.data != '0':
-        await send_memes_runner(chat_id=update.effective_chat.id, hours = int(query.data), type_of_post = 'post_db') 
+    if temp_list[0] == 'post_db':
+        print(query.data)
+        await send_memes_runner(chat_id=update.effective_chat.id, hours = int(temp_list[1])) 
+    elif temp_list[0] == 'carousel_db':
+        await main_carousel_sender(chat_id=update.effective_chat.id, hours = int(temp_list[1]))
+        print(temp_list)
     else:
         await query.edit_message_text(text = "Ok, if you want don't know how it's working just use /help")
 
+
+
 async def send_memes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send memes"""
+    print(update.message.text)
     await send_memes_runner(chat_id=update.effective_chat.id, hours = int(update.message.text), type_of_post = 'post_db')
+
+
 
 
 async def agreement_buttons(update:Update, context:ContextTypes.DEFAULT_TYPE):
 
     keyboard = [
         [
-            InlineKeyboardButton('Yes', callback_data = update.message.text),
-            InlineKeyboardButton('No', callback_data = '0')   
-
-
+            InlineKeyboardButton('Get posts', callback_data = ':'.join(['post_db', update.message.text])),
+            InlineKeyboardButton('Get carousels', callback_data = ':'.join(['carousel_db', update.message.text]))   
         ],
+        [InlineKeyboardButton('No', callback_data = '0')],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(f'Do you want to get meme(s) for {update.message.text} hour(s)?', reply_markup=reply_markup)
