@@ -11,14 +11,15 @@ from config import tg_access_token, db_db_name, db_host, db_password, db_user
 bot = ApplicationBuilder().token(tg_access_token).build().bot
 
 
-async def grasp_rows(db_pool, hours = 6):
+async def grasp_rows(db_pool, hours = 6, type_of_post = 'post_db'):
     """Grasp a banch of data from DB and convert to a dict format"""
     grasp = None
+    choose = type_of_post
     certain_time = datetime.strftime((datetime.today() - timedelta(hours=hours)), '%Y-%m-%d %H:%M:%S')
 
     postgres_insert = f"""
     SELECT pd.url, pd.text
-    FROM post_db pd
+    FROM {choose} pd
     WHERE pd.content_id in (SELECT cb.content_id FROM content_db cb 
             WHERE save_date > '{str(certain_time)}')"""
     try:
@@ -46,20 +47,20 @@ async def send_memes(array:bytes, chat_id, text) -> None:
         print(_ex)
 
 
-async def job(db_pool, chat_id, hours = 6):
+async def job(db_pool, chat_id, hours = 6, type_of_post = 'post_db'):
     """Does all work"""
-    an_array = await grasp_rows(db_pool, hours = hours)
+    an_array = await grasp_rows(db_pool, hours = hours,type_of_post = 'post_db')
     for key,v in an_array.items():
         read = await get_meta_data(key)
         await send_memes(read, chat_id, v)
 
-async def send_memes_runner(chat_id, hours = 6):
+async def send_memes_runner(chat_id, hours = 6,type_of_post = 'post_db'):
     """Main function"""
     try:
         connection = await asyncpg.connect(host = db_host, user = db_user, password = db_password
         , database = db_db_name)
         await asyncio.sleep(0.3)
-        task1 = asyncio.create_task(job(connection, chat_id, hours = hours))
+        task1 = asyncio.create_task(job(connection, chat_id, hours = hours, type_of_post = 'post_db'))
         await asyncio.gather(task1)
     except Exception as _ex:
         print('Error:', _ex)
@@ -69,10 +70,10 @@ async def send_memes_runner(chat_id, hours = 6):
             print('connection is closed')
 #189382736
 
-if __name__ == '__main__':
-    t0 = time()   
-    asyncio.run(send_memes_runner(189382736, 12))
-    print(time() - t0)
+# if __name__ == '__main__':
+#     t0 = time()   
+#     asyncio.run(send_memes_runner(189382736, 12))
+#     print(time() - t0)
     
 
 

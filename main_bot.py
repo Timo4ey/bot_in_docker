@@ -30,13 +30,13 @@ async def button(update:Update, context:ContextTypes.DEFAULT_TYPE) -> None:
     await query.answer()
 
     if query.data != '0':
-        await send_memes_runner(chat_id=update.effective_chat.id, hours = int(query.data)) 
+        await send_memes_runner(chat_id=update.effective_chat.id, hours = int(query.data), type_of_post = 'post_db') 
     else:
         await query.edit_message_text(text = "Ok, if you want don't know how it's working just use /help")
 
 async def send_memes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Send memes"""
-    await send_memes_runner(chat_id=update.effective_chat.id, hours = int(update.message.text))
+    await send_memes_runner(chat_id=update.effective_chat.id, hours = int(update.message.text), type_of_post = 'post_db')
 
 
 async def agreement_buttons(update:Update, context:ContextTypes.DEFAULT_TYPE):
